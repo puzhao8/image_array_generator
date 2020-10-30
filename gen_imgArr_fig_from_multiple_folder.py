@@ -60,12 +60,31 @@ def append_images(images, direction='horizontal',
 
     return new_im
 
+def img_add_txt(file):
+    blank_image = Image.open(file)
+    # print(np.array(blank_image).shape)
+    h = np.array(blank_image).shape[0]
+    w = np.array(blank_image).shape[1]
+    img_draw = ImageDraw.Draw(blank_image)
+
+    font = ImageFont.truetype("calibrib.ttf", 500) # timesbd.ttf
+    txt = os.path.split(file)[-1].split('T')[0][-4:]
+    img_draw.text((50, 50), f"{txt}", fill='white', font=font)
+    # img_draw.text((np.floor(h*0.1), np.floor(w*0.9)), f"{txt}", fill='white', font=font)
+    # blank_image.save(savePath / f"{os.path.split(file)[-1]}")
+    return blank_image
+
 if __name__ == "__main__":
 
-    fireName = "Sydney"
-    dataPath = Path(f"E:\Wildfire_Events_2020\Results_Analysis\{fireName}")
+    fireName = 'CAL_Creek' #  "CAL_Creek"  # 
+    rootPath = Path(f"E:\Wildfire_Events_2020\Results_Analysis\{fireName}")
+    dataPath = Path(glob.glob(str(rootPath / f"Progression*"))[0])
 
-    savePath = dataPath / "imgArray"
+    print(dataPath)
+    folderList = sorted(os.listdir(dataPath))
+    print(folderList)
+
+    savePath = rootPath / "imgArray"
     if not os.path.exists(savePath):
         os.mkdir(savePath)
 
@@ -75,30 +94,14 @@ if __name__ == "__main__":
     print("\n\n===================> Start to Arrange Images Into Image Array <====================")
 
 
-    def img_add_txt(file):
-        blank_image = Image.open(file)
-        # print(np.array(blank_image).shape)
-        w = np.array(blank_image).shape[0]
-        h = np.array(blank_image).shape[1]
-        img_draw = ImageDraw.Draw(blank_image)
-
-        font = ImageFont.truetype("calibrib.ttf", 500) # timesbd.ttf
-        txt = os.path.split(file)[-1].split('_')[0]
-        img_draw.text((np.floor(h*0.9), np.floor(w*0.9)), f"{txt}", fill='white', font=font)
-        # blank_image.save(savePath / f"{os.path.split(file)[-1]}")
-        return blank_image
-
-
     rowList = []
-    fileNameList = glob.glob(str(dataPath / f"*.png"))
-    print(len(fileNameList))
-    for i in range(0, 12, 4):
-        # print(f"{i}-{i+4}")   
-        sub_fileNameList = fileNameList[i:i+4]
-        # print(f"{i}-{i+4}: {sub_fileNameList}")   
-          
-        imageList = list(map(img_add_txt, sub_fileNameList))
-        # imageList = list(map(Image.open, fileNameList))
+    for folder in folderList:
+        fileNameList = glob.glob(str(dataPath / folder / f"*.png"))[:6]
+
+        if 'rgb' in folder:
+            imageList = list(map(img_add_txt, fileNameList))
+        else:
+            imageList = list(map(Image.open, fileNameList))
 
         row = append_images(imageList, direction='horizontal')
         rowList.append(row)
@@ -110,8 +113,8 @@ if __name__ == "__main__":
 
     print("----------------------------------------------------------------------------------")
     print("savePath: {}".format(savePath))
-    imgArray_scaled.save(savePath / f"{fireName}_imgArray_{ratio}.png")
-    imgArray_scaled.save(savePath / f"{fireName}_imgArray_{ratio}.pdf")
+    imgArray_scaled.save(Path("outputs") / f"{fireName}_imgArray_{ratio}.png")
+    # imgArray_scaled.save(Path("outputs") / f"{fireName}_imgArray_{ratio}.pdf")
     print("===========================> Finished and be Saved! <=============================")
 
 
