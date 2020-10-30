@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageColor
 from pathlib import Path
 import os, glob
 # from images2gif import writeGif
+# ok
 
 def img_mask(file):
     im_rgb = Image.open(file)
