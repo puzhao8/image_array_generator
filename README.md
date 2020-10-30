@@ -3,7 +3,7 @@
 
 <!-- ![](figures/elephant_imgArray.png) -->
 
-You need to let image name starts with 'a_xxxx.png', 'b_xxxx.png', ... 
+Your image names should start with 'a_xxxx.png', 'b_xxxx.png', ... 
 
 
 <img src="figures/elephant_imgArray.png" alt="drawing" width="400"/>
